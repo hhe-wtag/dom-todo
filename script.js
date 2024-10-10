@@ -5,9 +5,6 @@ const taskList = document.getElementById("task-list");
 
 addTodoBtn.addEventListener("click", addTodo);
 
-/**
- * Adding todo, clearing input after adding
- */
 function addTodo() {
   const newTodo = document.createElement("li");
   newTodo.innerHTML = todoInput.value;
