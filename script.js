@@ -11,69 +11,91 @@ function handleAddTodo() {
     id: Date.now(),
     title: $todoInput.value,
     createdAt: Date.now().toLocaleString(),
+    isEditing: false,
+    isCompleted: false,
   };
+
   if (newTodo.title.trim() === "") return;
+
   todos.push(newTodo);
   $todoInput.value = "";
+
   renderTodos();
 }
 
 function renderTodos() {
   $todoList.innerHTML = "";
+
   todos.forEach((todo) => {
-    $todoList.append(createTodo(todo));
+    $todoList.append(createTodoItem(todo));
   });
 }
 
-function createTodo(todo) {
-  const $newTodo = document.createElement("li");
-  $newTodo.style.listStyleType = "none";
-  $newTodo.innerHTML = `<span id=${todo.id}>${todo.title}</span>`;
+function createTodoItem(todo) {
+  const $todo = document.createElement("li");
+  $todo.style.listStyleType = "none";
 
-  $newTodo.append(createEditButton($newTodo));
-  $newTodo.append(createDeleteButton($newTodo));
+  $todo.append(
+    todo.isEditing ? createEditTodoEl(todo) : createNormalTodoEl(todo)
+  );
 
-  $newTodo.querySelector("span").addEventListener("click", () => {
-    if (!$newTodo.isContentEditable) {
-      $newTodo.classList.toggle("completed");
-    }
-  });
+  $todo.append(createEditButton(todo));
 
-  return $newTodo;
+  return $todo;
 }
 
-function createEditButton(todoItemEl) {
+function createNormalTodoEl(todo) {
+  const $todoText = document.createElement("span");
+  $todoText.innerText = todo.title;
+
+  $todoText.className = todo.isCompleted ? "completed" : "";
+
+  $todoText.addEventListener("click", () => {
+    toggleTodoDone(todo.id);
+  });
+
+  return $todoText;
+}
+
+function toggleTodoDone(todoId) {
+  todos = todos.map((todo) =>
+    todo.id === todoId ? { ...todo, isCompleted: !todo.isCompleted } : todo
+  );
+  renderTodos();
+}
+
+function createEditTodoEl(todo) {
+  const $editInput = document.createElement("input");
+  $editInput.type = "text";
+  $editInput.value = todo.title;
+
+  $editInput.addEventListener("input", (e) => {
+    updateTodoTitle(todo.id, e.target.value);
+  });
+
+  return $editInput;
+}
+
+function updateTodoTitle(todoId, newTitle) {
+  todos = todos.map((todo) =>
+    todo.id === todoId ? { ...todo, title: newTitle } : todo
+  );
+}
+
+function createEditButton(todo) {
   const $editBtn = document.createElement("button");
-  let isEditing = false;
+  $editBtn.innerText = todo.isEditing ? "Save" : "Edit";
 
-  $editBtn.innerText = "Edit";
   $editBtn.addEventListener("click", () => {
-    handleTodoEdit(todoItemEl, isEditing);
-    isEditing = !isEditing;
+    handleTodoEdit(todo);
   });
 
   return $editBtn;
 }
 
-function handleTodoEdit(todoItemEl, isEditing) {
-  if (isEditing) {
-    todoItemEl.contentEditable = false;
-    event.target.innerText = "Edit";
-  } else {
-    todoItemEl.contentEditable = true;
-    event.target.innerText = "Save";
-    todoItemEl.focus();
-  }
-
-  isEditing && updateTodo(todoItemEl);
-}
-
-function updateTodo(todoItemEl) {
-  const updatedTodoId = parseInt(todoItemEl.querySelector("span").id);
-  const updatedTodoTitle = todoItemEl.querySelector("span").innerText;
-
+function handleTodoEdit(editingTodo) {
   todos = todos.map((todo) =>
-    todo.id === updatedTodoId ? { ...todo, title: updatedTodoTitle } : todo
+    todo.id === editingTodo.id ? { ...todo, isEditing: !todo.isEditing } : todo
   );
 
   renderTodos();
