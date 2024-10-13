@@ -31,6 +31,7 @@ function createTodo(todo) {
   $newTodo.innerHTML = `<span id=${todo.id}>${todo.title}</span>`;
 
   $newTodo.append(createEditButton($newTodo));
+  $newTodo.append(createDeleteButton($newTodo));
 
   $newTodo.querySelector("span").addEventListener("click", () => {
     if (!$newTodo.isContentEditable) {
@@ -74,6 +75,22 @@ function updateTodo(todoItemEl) {
   todos = todos.map((todo) =>
     todo.id === updatedTodoId ? { ...todo, title: updatedTodoTitle } : todo
   );
+
+  renderTodos();
+}
+
+function createDeleteButton(todoItemEl) {
+  const $deleteBtn = document.createElement("button");
+  $deleteBtn.innerText = "Delete";
+
+  $deleteBtn.addEventListener("click", () => handleDeleteTodo(todoItemEl));
+
+  return $deleteBtn;
+}
+
+function handleDeleteTodo(todoItemEl) {
+  const deletedTodoId = parseInt(todoItemEl.querySelector("span").id);
+  todos = todos.filter((todo) => todo.id !== deletedTodoId);
 
   renderTodos();
 }
