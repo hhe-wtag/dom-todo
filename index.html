@@ -4,12 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Todo - DOM Manipulation</title>
+    <link href="styles.css" rel="stylesheet" />
   </head>
   <body>
     <header id="header">
-      <h1>The Greate Todo List 📝</h1>
+      <h1>The Great Todo List 📝</h1>
     </header>
-    <main></main>
+    <main>
+      <div id="todo-input-container">
+        <input
+          type="text"
+          id="todo-input"
+          name="todo"
+          placeholder="Enter your todo"
+        />
+        <button id="add-todo-btn">Add Todo</button>
+      </div>
+      <div id="todo-list-container">
+        <ul id="todo-list"></ul>
+      </div>
+    </main>
     <script src="script.js"></script>
   </body>
 </html>
