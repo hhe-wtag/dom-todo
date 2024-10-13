@@ -10,3 +10,7 @@ li.completed::before {
   text-decoration: line-through;
   color: gray;
 }
+
+button {
+  margin-left: 6px;
+}

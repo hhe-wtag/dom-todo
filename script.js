@@ -28,46 +28,52 @@ function renderTodos() {
 function createTodo(todo) {
   const $newTodo = document.createElement("li");
   $newTodo.style.listStyleType = "none";
-  $newTodo.innerHTML = `<span>${todo.title}</span>`;
+  $newTodo.innerHTML = `<span id=${todo.id}>${todo.title}</span>`;
+
+  $newTodo.append(createEditButton($newTodo));
 
   $newTodo.querySelector("span").addEventListener("click", () => {
-    $newTodo.classList.toggle("completed");
+    if (!$newTodo.isContentEditable) {
+      $newTodo.classList.toggle("completed");
+    }
   });
 
   return $newTodo;
 }
 
-/**
- * Update todo using Event Delegation to
- * capture click and perform edit or complete todo action
- */
-taskList.addEventListener("click", handleTodoClick);
+function createEditButton(todoItemEl) {
+  const $editBtn = document.createElement("button");
+  let isEditing = false;
 
-function handleTodoClick(event) {
-  const clickedElement = event.target;
+  $editBtn.innerText = "Edit";
+  $editBtn.addEventListener("click", () => {
+    handleTodoEdit(todoItemEl, isEditing);
+    isEditing = !isEditing;
+  });
 
-  // Handle marking todo as completed or not
-  if (clickedElement.tagName === "LI" && !clickedElement.isContentEditable) {
-    if (clickedElement.style.textDecoration === "") {
-      clickedElement.style.textDecoration = "line-through";
-      clickedElement.style.listStyleType = "disc";
-    } else {
-      clickedElement.style.textDecoration = "";
-      clickedElement.style.listStyleType = "circle";
-    }
+  return $editBtn;
+}
+
+function handleTodoEdit(todoItemEl, isEditing) {
+  if (isEditing) {
+    todoItemEl.contentEditable = false;
+    event.target.innerText = "Edit";
+  } else {
+    todoItemEl.contentEditable = true;
+    event.target.innerText = "Save";
+    todoItemEl.focus();
   }
 
-  // Handle editing the todo item when the edit button is clicked
-  if (clickedElement.tagName === "BUTTON") {
-    const todoItem = clickedElement.parentElement;
+  isEditing && updateTodo(todoItemEl);
+}
 
-    if (todoItem.isContentEditable) {
-      todoItem.contentEditable = "false";
-      clickedElement.innerHTML = "✏️";
-    } else {
-      todoItem.contentEditable = "true";
-      clickedElement.innerHTML = "✔️";
-      todoItem.focus();
-    }
-  }
+function updateTodo(todoItemEl) {
+  const updatedTodoId = parseInt(todoItemEl.querySelector("span").id);
+  const updatedTodoTitle = todoItemEl.querySelector("span").innerText;
+
+  todos = todos.map((todo) =>
+    todo.id === updatedTodoId ? { ...todo, title: updatedTodoTitle } : todo
+  );
+
+  renderTodos();
 }
