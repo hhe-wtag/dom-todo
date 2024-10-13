@@ -1,0 +1,12 @@
+li::before {
+  content: "🔳 ";
+}
+
+li.completed::before {
+  content: "✔️ ";
+}
+
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
