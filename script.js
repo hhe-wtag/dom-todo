@@ -51,16 +51,19 @@ function createNormalTodoEl(todo) {
   $todoText.className = todo.isCompleted ? "completed" : "";
 
   $todoText.addEventListener("click", () => {
-    toggleTodoDone(todo.id);
+    handleToggleTodoCompleted(todo.id);
   });
 
   return $todoText;
 }
 
-function toggleTodoDone(todoId) {
-  todos = todos.map((todo) =>
-    todo.id === todoId ? { ...todo, isCompleted: !todo.isCompleted } : todo
-  );
+function handleToggleTodoCompleted(todoId) {
+  const todo = todos.find((todo) => todo.id === todoId);
+
+  if (todo === undefined) return;
+
+  todo.isCompleted = !todo.isCompleted;
+
   renderTodos();
 }
 
@@ -70,16 +73,18 @@ function createEditTodoEl(todo) {
   $editInput.value = todo.title;
 
   $editInput.addEventListener("input", (e) => {
-    updateTodoTitle(todo.id, e.target.value);
+    handleTodoTitleUpdate(todo.id, e.target.value);
   });
 
   return $editInput;
 }
 
-function updateTodoTitle(todoId, newTitle) {
-  todos = todos.map((todo) =>
-    todo.id === todoId ? { ...todo, title: newTitle } : todo
-  );
+function handleTodoTitleUpdate(todoId, newTitle) {
+  const todo = todos.find((todo) => todo.id === todoId);
+
+  if (todo === undefined) return;
+
+  todo.title = newTitle;
 }
 
 function createEditButton(todo) {
@@ -87,16 +92,18 @@ function createEditButton(todo) {
   $editBtn.innerText = todo.isEditing ? "Save" : "Edit";
 
   $editBtn.addEventListener("click", () => {
-    handleTodoEdit(todo);
+    handleTodoEdit(todo.id);
   });
 
   return $editBtn;
 }
 
-function handleTodoEdit(editingTodo) {
-  todos = todos.map((todo) =>
-    todo.id === editingTodo.id ? { ...todo, isEditing: !todo.isEditing } : todo
-  );
+function handleTodoEdit(todoId) {
+  const todo = todos.find((todo) => todo.id === todoId);
+
+  if (todo === undefined) return;
+
+  todo.isEditing = !todo.isEditing;
 
   renderTodos();
 }
