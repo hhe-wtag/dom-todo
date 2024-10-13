@@ -12,6 +12,7 @@ function handleAddTodo() {
     title: $todoInput.value,
     createdAt: Date.now().toLocaleString(),
   };
+  
   if (newTodo.title.trim() === "") return;
   todos.push(newTodo);
   $todoInput.value = "";
