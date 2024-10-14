@@ -1,12 +1,16 @@
-li::before {
+span::before {
   content: "🔳 ";
 }
 
-li.completed::before {
+span.completed::before {
   content: "✔️ ";
 }
 
 .completed {
   text-decoration: line-through;
   color: gray;
+}
+
+button {
+  margin-left: 6px;
 }
