@@ -40,6 +40,7 @@ function createTodoItem(todo) {
   );
 
   $todo.append(createEditButton(todo));
+  $todo.append(createDeleteButton(todo));
 
   return $todo;
 }
@@ -104,6 +105,21 @@ function handleTodoEdit(todoId) {
   if (todo === undefined) return;
 
   todo.isEditing = !todo.isEditing;
+
+  renderTodos();
+}
+
+function createDeleteButton(todo) {
+  const $deleteBtn = document.createElement("button");
+  $deleteBtn.innerText = "Delete";
+
+  $deleteBtn.addEventListener("click", () => handleDeleteTodo(todo.id));
+
+  return $deleteBtn;
+}
+
+function handleDeleteTodo(todoId) {
+  todos = todos.filter((todo) => todo.id !== todoId);
 
   renderTodos();
 }
